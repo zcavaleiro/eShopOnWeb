@@ -2,6 +2,7 @@
 
 <table>
     <thead>
+        <th>Imagem</th>
         <th>Name</th>
         <th>Price</th>
         <th></th>
@@ -10,6 +11,7 @@
     @foreach (var catalogItem in Model)
     {
         <tr>
+            <td><img class="esh-catalog-thumbnail" src="@catalogItem.PictureUri" style="height: 50px; width: auto;"/></td>
             <td>@catalogItem.Name</td>
             <td>
                 <span>@catalogItem.Price</span>
