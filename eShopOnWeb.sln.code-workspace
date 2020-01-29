@@ -1,8 +1,8 @@
 {
 	"folders": [
 		{
+			"name": "eShopOnWeb",
 			"path": "."
 		}
-	],
-	"settings": {}
+	]
 }

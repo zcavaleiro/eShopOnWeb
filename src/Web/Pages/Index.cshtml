@@ -11,18 +11,55 @@
 <section class="esh-catalog-filters">
     <div class="container">
         <form method="get">
+            <label class="esh-catalog-label" data-title="View Type">
+                <select asp-for="@Model.CatalogModel.ResultView"
+                asp-items="@Model.CatalogModel.ResultViews" class="esh-catalog-filter"></select>
+            </label>
             <label class="esh-catalog-label" data-title="brand">
-                <select asp-for="@Model.CatalogModel.BrandFilterApplied" asp-items="@Model.CatalogModel.Brands" class="esh-catalog-filter"></select>
+                <select asp-for="@Model.CatalogModel.BrandFilterApplied"
+                asp-items="@Model.CatalogModel.Brands" class="esh-catalog-filter"></select>
             </label>
             <label class="esh-catalog-label" data-title="type">
-                <select asp-for="@Model.CatalogModel.TypesFilterApplied" asp-items="@Model.CatalogModel.Types" class="esh-catalog-filter"></select>
+                <select asp-for="@Model.CatalogModel.TypesFilterApplied"
+                asp-items="@Model.CatalogModel.Types"
+                class="esh-catalog-filter"></select>
             </label>
             <input class="esh-catalog-send" type="image" src="images/arrow-right.svg" />
         </form>
     </div>
 </section>
 <div class="container">
-    <form method="get">
+    @if (Model.CatalogModel.CatalogItems.Any())
+    {
+        @await Html.PartialAsync("_pagination", Model.CatalogModel.PaginationInfo);
+
+        switch (Model.CatalogModel.ResultView) {
+            case ResultView.Grid:    
+                <partial name="ResultViews/_gridView" for="@Model.CatalogModel.CatalogItems" />        
+                break;
+            case ResultView.List: {
+                Func<dynamic, object> listItemTemplate = @<partial name="_product_mini" for="@item" />;
+                var listViewModel = new ListViewModel {
+                    Items = Model.CatalogModel.CatalogItems,
+                    ItemTemplate = listItemTemplate
+                };
+                <partial name="ResultViews/_listView" for="@listViewModel" />
+                break;
+            }
+            case ResultView.Table:
+                <partial name="ResultViews/_tableView" for="CatalogModel.CatalogItems" />
+                break;
+        }
+        @await Html.PartialAsync("_pagination", Model.CatalogModel.PaginationInfo);
+    }
+    else
+    {
+        <div class="esh-catalog-items row">
+            THERE ARE NO RESULTS THAT MATCH YOUR SEARCH
+        </div>
+    }
+</div>
+    <form method="POST">
         <div>
             I want to see:
             <select name="displayMode">
@@ -34,37 +71,3 @@
             <input type="submit" value="Submit" />
         </div>
     </form>
-
-    @{
-        var vista = "grid";
-        var method = Request.Method;
-        if(method == "GET"){
-            var f = Request;
-        //    vista = Request.Form["displayMode"].ToString();
-        //    vista = r["displayMode"];
-        }
-    }
-    @if (Model.CatalogModel.CatalogItems.Any())
-    {
-        <partial name="_pagination" for="CatalogModel.PaginationInfo" />
-
-        @switch (vista)
-        {
-            case "grid":
-                <partial name="DisplayItems/_displayGallery"/>
-                break;
-            default:
-                <partial name="DisplayItems/_displayList"/>
-                break;
-        }
-        
-
-        <partial name="_pagination" for="CatalogModel.PaginationInfo" />
-    }
-    else
-    {
-        <div class="esh-catalog-items row">
-            THERE ARE NO RESULTS THAT MATCH YOUR SEARCH
-        </div>
-    }
-</div>

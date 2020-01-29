@@ -7,7 +7,7 @@ using Microsoft.eShopWeb.Web.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Web.Extensions
+namespace Microsoft.eShopWeb.Web.Services
 {
     public static class CatalogExtensions
     {
@@ -26,8 +26,8 @@ namespace Web.Extensions
             services.AddScoped<ICatalogItemViewModelService, CatalogItemViewModelService>();
             services.Configure<CatalogSettings>(configuration);
             services.AddSingleton<IUriComposer>(new UriComposer(configuration.Get<CatalogSettings>()));
-
+            
         }
-
+        
     }
-} 
+}
